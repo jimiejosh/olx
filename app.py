@@ -92,9 +92,11 @@ if soup:
             count+=1
             returnJson.append(children)
     
-    print(type(returnJson))  # 👉️ <class 'str'>
- 
-    json_data = json.dumps(returnJson, indent=2)
-    with open('output.json', 'w') as f:
-        print(json_data, file=f)  # Python 3.x
-    # print(str(count) + "16 Ads URLs Parsed")
+    # print(type(returnJson))  # 👉️ <class 'str'>
+    # file name is mydata
+    with open("output.json", "w") as final:
+        json.dump(returnJson, final)
+    # json_data = json.dumps(returnJson, indent=2)
+    # with open('output.json', 'w') as f:
+    #     print(json_data, file=f)  # Python 3.x
+    print(str(count) + " of 16 Ads URLs Parsed")
