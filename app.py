@@ -1,5 +1,4 @@
 import requests
-from lxml import etree
 from bs4 import BeautifulSoup
 import json
 
@@ -34,12 +33,11 @@ if resp.status_code == 200:
         location = ""
         relativedate = ""
         if children.find("ul").findAll("li"):
-            dateLocation = children.find("ul").findAll("li")
-            location = dateLocation[0].getText()
-            relativedate = dateLocation[1].getText()
+            dateLocation = children.find("ul").findAll("li") 
 
-        tempJson = {"image":image, "link":children.find("a").get('href'), "title":children.find("strong").getText().strip(), "location":location, "relativedate":relativedate, "price":children.find("div", {"class":"price"}).getText().strip()}
+        tempJson = {"image":image, "title":children.find("strong").getText().strip(), "price":children.find("div", {"class":"price"}).getText().strip()}
         returnJson.append(tempJson)
 
 json_data = json.dumps(returnJson)
-print(json_data)
+with open('output.json', 'w') as f:
+    print(json_data, file=f)  # Python 3.x
