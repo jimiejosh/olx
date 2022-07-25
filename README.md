@@ -1,5 +1,5 @@
 # OLX Oython Crawler
 
-Imple crawler to get ads details form olx.pl
+Simple crawler to get ads details form olx.pl
 
 

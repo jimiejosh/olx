@@ -39,7 +39,7 @@ def get_url (url = false):
 def get_children (url = false):
     if not url:
         return false
-    print(url)
+    print("Scanning URL " + url)
     body = get_url(url)
     if body:    
         children = body.find("body").find("div", attrs={'id': 'root'})
@@ -54,12 +54,20 @@ def get_children (url = false):
                 image.append(link.get('src'))
 
         price = children.find("div", attrs={"data-testid":"ad-price-container"})
-        
+        title = children.find("h1", attrs={"data-cy":"ad_title"})
+        if not title:
+            return false
+        else:
+            title = title.getText().strip()
+            
+        description = children.find("div", attrs={"data-cy":"ad_description"})
+        if not description:
+            return false
+        else:
+            description = description.getText().strip()
         # add ads values
-        tempJson = { "title":children.find("h1", attrs={"data-cy":"ad_title"}).getText().strip(),
-        "description":children.find("div", attrs={"data-cy":"ad_description"}).getText().strip(), 
-        "image":image,
-        "price": "" if not price else price.text }
+        price = "" if not price else price.text
+        tempJson = { "title":title,"description":description, "image":image,"price": price }
         return tempJson
     else:
         return false
@@ -67,15 +75,12 @@ def get_children (url = false):
 
 # Get home page ads lists
 URL = "https://www.olx.pl/" #"http://localhost/pytest/index.html"
-
+count = 0
 soup = get_url(URL)
 if soup: 
     # finding parent <ul> tag
     parent = soup.find(id="mainpageAds").find("ul", id="gallerywide")
     
-    # finding all <li> tags 
-    descendant = parent.find_all("li", class_="fleft") 
-
     #variable to store all ads details
     returnJson = []
 
@@ -84,9 +89,12 @@ if soup:
         link = child.find("a").get('href')
         children = get_children(link)
         if children:
+            count+=1
             returnJson.append(children)
-
-    json_data = json.dumps(returnJson)
+    
+    print(type(returnJson))  # 👉️ <class 'str'>
+ 
+    json_data = json.dumps(returnJson, indent=2)
     with open('output.json', 'w') as f:
         print(json_data, file=f)  # Python 3.x
-    print(json_data)
+    # print(str(count) + "16 Ads URLs Parsed")
